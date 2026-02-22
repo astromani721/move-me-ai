@@ -3,7 +3,16 @@
 
 `move-me-ai` is an advanced AI system built to solve the "messy," high-stakes problem of relocating. Instead of a simple chatbot, this project uses a **Hierarchical Multi-Agent Architecture** to coordinate specialized "Worker" agents. By leveraging Hugging Face's `smolagents` and **CodeAgents**, the system doesn't just talk—it writes and executes Python code to find homes, evaluate school districts, calculate insurance risks, and map out local lifestyle amenities in a single autonomous pass.
 
+## 📌 Current Status
 
+The repository currently includes a working **scaffold**:
+
+* Typed Pydantic models for cross-agent data contracts
+* A manager entrypoint that orchestrates specialist modules
+* Placeholder specialist logic (housing, school, insurance, lifestyle)
+* Baseline tests for orchestration and data consistency
+
+`smolagents` `CodeAgent` orchestration and live provider integrations are planned next.
 
 ---
 
@@ -109,6 +118,12 @@ relocation_manager.run(
     "get auto/renter insurance quotes, and find the nearest Indian grocery."
 )
 ```
+
+## 🗺 Roadmap
+
+* Integrate `smolagents` manager + managed child agents
+* Replace provider stubs with real API-backed tools (housing, schools, insurance, places)
+* Add integration tests for multi-agent orchestration and external tool behavior
 
 ---
 
