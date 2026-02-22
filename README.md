@@ -43,6 +43,7 @@ move-me-ai/
 │   └── models.py           # Pydantic schemas for cross-agent data consistency
 ├── README.md               # Architecture & Project Documentation
 └── requirements.txt        # Dependencies (smolagents, pydantic, etc.)
+```
 
 ---
 
@@ -84,6 +85,7 @@ relocation_manager.run(
     "Relocating to 10583. Find 3 houses, check public school ratings, "
     "get auto/renter insurance quotes, and find the nearest Indian grocery."
 )
+```
 
 ---
 
