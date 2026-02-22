@@ -42,7 +42,10 @@ move-me-ai/
 │   ├── tools/              # Custom @tool definitions (API wrappers)
 │   └── models.py           # Pydantic schemas for cross-agent data consistency
 ├── README.md               # Architecture & Project Documentation
-└── requirements.txt        # Dependencies (smolagents, pydantic, etc.)
+├── requirements.txt        # Runtime dependencies
+├── requirements-dev.txt    # Dev tools (lint, typecheck, test)
+├── pyproject.toml          # Ruff, mypy, and pytest configuration
+└── Makefile                # Common developer commands
 ```
 
 ---
@@ -72,6 +75,26 @@ move-me-ai/
     ```bash
     pip install -r requirements.txt
     ```
+
+### Developer Workflow
+
+For local development (linting, formatting, type checks, and tests):
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+Common commands:
+
+```bash
+make help
+make lint
+make fix
+make format
+make typecheck
+make test
+make check
+```
 
 ### Running a Relocation Task
 
