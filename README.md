@@ -51,6 +51,7 @@ move-me-ai/
 │   ├── tools/              # Custom @tool definitions (API wrappers)
 │   └── models.py           # Pydantic schemas for cross-agent data consistency
 ├── README.md               # Architecture & Project Documentation
+├── .env.example            # Environment variable template
 ├── requirements.txt        # Runtime dependencies
 ├── requirements-dev.txt    # Dev tools (lint, typecheck, test)
 ├── pyproject.toml          # Ruff, mypy, and pytest configuration
@@ -84,6 +85,12 @@ move-me-ai/
     ```bash
     pip install -r requirements.txt
     ```
+
+4.  **Configure environment variables:**
+    ```bash
+    cp .env.example .env
+    ```
+    Then edit `.env` with the tokens/keys you plan to use.
 
 ### Developer Workflow
 
