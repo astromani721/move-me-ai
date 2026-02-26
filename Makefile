@@ -1,4 +1,4 @@
-.PHONY: help install install-dev lint fix format typecheck test check search
+.PHONY: help install install-dev lint fix format typecheck test check run ping-model
 
 help:
 	@echo "Targets:"
@@ -10,7 +10,8 @@ help:
 	@echo "  typecheck    Run mypy on src/"
 	@echo "  test         Run pytest"
 	@echo "  check        Run lint + typecheck + test"
-	@echo "  search       Search for housing (ZIP= BED= BATH= RENT= LIMIT=)"
+	@echo "  run          Run relocation planner (PROMPT= required)"
+	@echo "  ping-model   Send a test prompt to the HuggingFace model"
 
 install:
 	pip install -e . -r requirements.txt
@@ -35,11 +36,10 @@ test:
 
 check: lint typecheck test
 
-ZIP  ?= 10583
-BED  ?= 3
-BATH ?= 1
-RENT ?=
-LIMIT ?= 5
+PROMPT ?= Relocating to 10583. Find 3-bedroom rentals, check schools, estimate insurance, and find nearest Indian grocery.
 
-search:
-	PYTHONPATH=src python -m cli --zip $(ZIP) --bedrooms $(BED) --bathrooms $(BATH) --limit $(LIMIT) $(if $(RENT),--max-rent $(RENT),)
+run:
+	PYTHONPATH=src python -m cli "$(PROMPT)"
+
+ping-model:
+	PYTHONPATH=src python -c "from model import get_model; m = get_model(); print(m([{'role':'user','content':'Say hello in one sentence.'}]))"

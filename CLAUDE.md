@@ -42,6 +42,7 @@ tests/             ← Test Sources Root (marked in IntelliJ)
 | `src/manager.py` | Orchestrator entrypoint — `RelocationManager.run()` |
 | `src/models.py` | Pydantic data contracts shared across all agents |
 | `src/cli.py` | CLI entrypoint — argparse + rich table output |
+| `src/model.py` | HuggingFace `InferenceClientModel` factory |
 | `src/logging_config.py` | Structured JSON logging to stderr |
 | `src/agents/housing.py` | Housing specialist (stub → RentCast API) |
 | `src/agents/school.py` | School specialist (stub → Google Places / web search) |
@@ -59,10 +60,10 @@ from logging_config import configure_logging
 
 ## Running the CLI
 ```bash
-make search                                  # defaults: zip=10583, 3BR, 1BA
-make search ZIP=10583 BED=3 BATH=2
-make search ZIP=10583 BED=3 RENT=5000
-PYTHONPATH=src python -m cli --zip 10583 --bedrooms 3 --bathrooms 2
+make run                                     # uses default prompt (zip 10583, 3BR)
+make run PROMPT="Moving to 90210, 2 bedrooms, 2 bathrooms"
+make run PROMPT="Relocating to 10583, max rent 5000"
+PYTHONPATH=src python -m cli "Moving to 90210, 2 bedrooms"
 ```
 
 ## Available API Keys (from .env)
@@ -78,10 +79,11 @@ PYTHONPATH=src python -m cli --zip 10583 --bedrooms 3 --bathrooms 2
 - [x] Manager orchestration skeleton (`manager.py`)
 - [x] Stub agent functions (housing, school, insurance, lifestyle)
 - [x] Housing stub with zip-aware data, bedroom/bathroom/rent filtering, sorted results
-- [x] CLI with argparse + rich table output (`cli.py`)
+- [x] CLI accepts natural language prompt, routes through manager (`cli.py`)
 - [x] Structured JSON logging (`logging_config.py`)
+- [x] HuggingFace `InferenceClientModel` factory (`model.py`) — `make ping-model` verified
 - [x] Dev tooling (ruff, mypy, pytest, Makefile)
-- [x] 24 tests (housing filters, CLI args, render output)
+- [x] 28 tests (housing filters, CLI args, render output, model factory)
 - [ ] Wire `smolagents` `CodeAgent` + `ManagedAgent` into manager
 - [ ] Housing: real listings via RentCast API
 - [ ] School: ratings via Google Places / web search fallback
@@ -111,5 +113,6 @@ make format     # ruff format
 make typecheck  # mypy
 make test       # pytest
 make check      # lint + typecheck + test
-make search     # run housing CLI (ZIP= BED= BATH= RENT= LIMIT=)
+make run        # run relocation planner (PROMPT= optional)
+make ping-model # send test prompt to HuggingFace model
 ```

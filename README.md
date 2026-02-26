@@ -9,9 +9,10 @@ The repository includes a working **CLI and orchestration scaffold**:
 
 * Typed Pydantic models for cross-agent data contracts
 * A manager entrypoint that orchestrates specialist modules
-* Housing search CLI with zip, bedrooms, bathrooms, and max-rent filters
+* Natural language CLI that routes through the manager and all 4 specialist agents
 * Structured JSON logging
-* 24 tests covering housing filters, CLI args, and render output
+* HuggingFace `InferenceClientModel` factory (verified with `make ping-model`)
+* 28 tests covering housing filters, CLI args, render output, and model factory
 
 `smolagents` `CodeAgent` orchestration and live provider integrations are planned next.
 
@@ -45,7 +46,8 @@ move-me-ai/
 ├── src/                    # Sources root
 │   ├── manager.py          # The CodeAgent orchestrator (The "Brain")
 │   ├── models.py           # Pydantic schemas for cross-agent data consistency
-│   ├── cli.py              # Command-line interface (argparse + rich)
+│   ├── cli.py              # Command-line interface (natural language prompt + rich)
+│   ├── model.py            # HuggingFace InferenceClientModel factory
 │   ├── logging_config.py   # Structured JSON logging
 │   ├── agents/             # Child agent definitions (Specialists)
 │   │   ├── housing.py      # Property search logic
@@ -116,18 +118,18 @@ make test
 make check
 ```
 
-### Running a Housing Search
+### Running a Relocation Search
 
 ```bash
-make search                                  # defaults: zip=10583, 3BR, 1BA
-make search ZIP=10583 BED=3 BATH=2
-make search ZIP=10583 BED=3 RENT=5000 LIMIT=3
+make run                                                # uses built-in default prompt
+make run PROMPT="Moving to 90210, 2 bedrooms, 2 bathrooms"
+make run PROMPT="Relocating to 10583, max rent 5000"
 ```
 
 Or directly:
 
 ```bash
-PYTHONPATH=src python -m cli --zip 10583 --bedrooms 3 --bathrooms 2 --max-rent 5500
+PYTHONPATH=src python -m cli "Moving to 90210, 2 bedrooms, 2 bathrooms"
 ```
 
 ## 🗺 Roadmap
