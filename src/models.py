@@ -5,6 +5,15 @@ from __future__ import annotations
 from pydantic import BaseModel, Field
 
 
+class HousingSearchCriteria(BaseModel):
+    """Structured search parameters used by the housing specialist."""
+
+    zip_code: str
+    bedrooms: int = Field(default=3, ge=1)
+    bathrooms: int = Field(default=1, ge=1)
+    max_rent_usd: int | None = Field(default=None, ge=0)
+
+
 class RelocationRequest(BaseModel):
     """Normalized user input passed to the orchestration layer."""
 
@@ -17,6 +26,7 @@ class HousingOption(BaseModel):
     address: str
     monthly_rent_usd: int
     bedrooms: int
+    bathrooms: int
 
 
 class SchoolAssessment(BaseModel):

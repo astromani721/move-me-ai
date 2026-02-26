@@ -1,5 +1,5 @@
-from src.manager import relocation_manager
-from src.models import RelocationReport
+from manager import relocation_manager
+from models import RelocationReport
 
 
 def test_manager_run_returns_report() -> None:

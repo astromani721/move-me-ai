@@ -2,11 +2,18 @@
 
 from __future__ import annotations
 
-from src.agents.housing import find_housing_options
-from src.agents.insurance import estimate_insurance
-from src.agents.lifestyle import assess_lifestyle
-from src.agents.school import assess_school
-from src.models import PropertyDossier, RelocationReport, RelocationRequest
+import re
+
+from agents.housing import find_housing_options
+from agents.insurance import estimate_insurance
+from agents.lifestyle import assess_lifestyle
+from agents.school import assess_school
+from models import (
+    HousingSearchCriteria,
+    PropertyDossier,
+    RelocationReport,
+    RelocationRequest,
+)
 
 
 class RelocationManager:
@@ -14,7 +21,10 @@ class RelocationManager:
 
     def run(self, prompt: str) -> RelocationReport:
         request = RelocationRequest(prompt=prompt)
-        housing_options = find_housing_options(request=request)
+        zip_match = re.search(r"\b(\d{5})\b", prompt)
+        zip_code = zip_match.group(1) if zip_match else "00000"
+        criteria = HousingSearchCriteria(zip_code=zip_code)
+        housing_options = find_housing_options(criteria=criteria)
         dossiers = []
         for option in housing_options:
             dossiers.append(

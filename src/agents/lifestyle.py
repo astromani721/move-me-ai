@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from src.models import LifestyleAssessment
+from models import LifestyleAssessment
 
 
 def assess_lifestyle(address: str) -> LifestyleAssessment:

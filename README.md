@@ -5,12 +5,13 @@
 
 ## 📌 Current Status
 
-The repository currently includes a working **scaffold**:
+The repository includes a working **CLI and orchestration scaffold**:
 
 * Typed Pydantic models for cross-agent data contracts
 * A manager entrypoint that orchestrates specialist modules
-* Placeholder specialist logic (housing, school, insurance, lifestyle)
-* Baseline tests for orchestration and data consistency
+* Housing search CLI with zip, bedrooms, bathrooms, and max-rent filters
+* Structured JSON logging
+* 24 tests covering housing filters, CLI args, and render output
 
 `smolagents` `CodeAgent` orchestration and live provider integrations are planned next.
 
@@ -41,20 +42,23 @@ The project follows the **Manager-Worker (Orchestrator)** pattern, ensuring stri
 
 ```text
 move-me-ai/
-├── src/
+├── src/                    # Sources root
 │   ├── manager.py          # The CodeAgent orchestrator (The "Brain")
+│   ├── models.py           # Pydantic schemas for cross-agent data consistency
+│   ├── cli.py              # Command-line interface (argparse + rich)
+│   ├── logging_config.py   # Structured JSON logging
 │   ├── agents/             # Child agent definitions (Specialists)
 │   │   ├── housing.py      # Property search logic
 │   │   ├── school.py       # Education & district analysis
 │   │   ├── insurance.py    # Risk & premium estimation
 │   │   └── lifestyle.py    # Grocery, park, & library scouting
-│   ├── tools/              # Custom @tool definitions (API wrappers)
-│   └── models.py           # Pydantic schemas for cross-agent data consistency
-├── README.md               # Architecture & Project Documentation
+│   └── tools/              # Custom @tool definitions (API wrappers)
+│       └── providers.py
+├── tests/                  # Test suite (24 tests)
 ├── .env.example            # Environment variable template
 ├── requirements.txt        # Runtime dependencies
 ├── requirements-dev.txt    # Dev tools (lint, typecheck, test)
-├── pyproject.toml          # Ruff, mypy, and pytest configuration
+├── pyproject.toml          # Build, ruff, mypy, and pytest configuration
 └── Makefile                # Common developer commands
 ```
 
@@ -83,7 +87,7 @@ move-me-ai/
 
 3.  **Install dependencies:**
     ```bash
-    pip install -r requirements.txt
+    pip install -e . -r requirements.txt
     ```
 
 4.  **Configure environment variables:**
@@ -97,7 +101,7 @@ move-me-ai/
 For local development (linting, formatting, type checks, and tests):
 
 ```bash
-pip install -r requirements-dev.txt
+make install-dev
 ```
 
 Common commands:
@@ -112,18 +116,18 @@ make test
 make check
 ```
 
-### Running a Relocation Task
+### Running a Housing Search
 
-To start a new relocation analysis, run the manager with your specific requirements. The system will autonomously determine which experts to call.
+```bash
+make search                                  # defaults: zip=10583, 3BR, 1BA
+make search ZIP=10583 BED=3 BATH=2
+make search ZIP=10583 BED=3 RENT=5000 LIMIT=3
+```
 
-```python
-from src.manager import relocation_manager
+Or directly:
 
-# Example Prompt:
-relocation_manager.run(
-    "Relocating to 10583. Find 3 houses, check public school ratings, "
-    "get auto/renter insurance quotes, and find the nearest Indian grocery."
-)
+```bash
+PYTHONPATH=src python -m cli --zip 10583 --bedrooms 3 --bathrooms 2 --max-rent 5500
 ```
 
 ## 🗺 Roadmap

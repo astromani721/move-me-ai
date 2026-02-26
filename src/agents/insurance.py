@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from src.models import InsuranceEstimate
+from models import InsuranceEstimate
 
 
 def estimate_insurance(address: str) -> InsuranceEstimate:

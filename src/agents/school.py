@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from src.models import SchoolAssessment
+from models import SchoolAssessment
 
 
 def assess_school(address: str) -> SchoolAssessment:
