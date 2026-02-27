@@ -1,4 +1,4 @@
-.PHONY: help install install-dev lint fix format typecheck test check run ping-model
+.PHONY: help install install-dev lint fix format typecheck test check run run-agent ping-model
 
 help:
 	@echo "Targets:"
@@ -10,7 +10,8 @@ help:
 	@echo "  typecheck    Run mypy on src/"
 	@echo "  test         Run pytest"
 	@echo "  check        Run lint + typecheck + test"
-	@echo "  run          Run relocation planner (PROMPT= required)"
+	@echo "  run          Run relocation planner (PROMPT= optional)"
+	@echo "  run-agent    Run relocation planner in smolagents mode (PROMPT= optional)"
 	@echo "  ping-model   Send a test prompt to the HuggingFace model"
 
 install:
@@ -40,6 +41,9 @@ PROMPT ?= Relocating to 10583. Find 3-bedroom rentals, check schools, estimate i
 
 run:
 	PYTHONPATH=src python -m cli "$(PROMPT)"
+
+run-agent:
+	PYTHONPATH=src python -m cli --agent "$(PROMPT)"
 
 ping-model:
 	PYTHONPATH=src python -c "from model import get_model; m = get_model(); print(m([{'role':'user','content':'Say hello in one sentence.'}]))"

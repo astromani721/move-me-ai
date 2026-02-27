@@ -11,7 +11,7 @@ from rich.console import Console
 from rich.table import Table
 
 from logging_config import configure_logging
-from manager import relocation_manager
+from manager import RelocationManager
 from models import RelocationReport
 
 log = logging.getLogger(__name__)
@@ -32,6 +32,12 @@ def _build_parser() -> argparse.ArgumentParser:
         default="INFO",
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
         help="Log level",
+    )
+    parser.add_argument(
+        "--agent",
+        action="store_true",
+        default=False,
+        help="Use smolagents CodeAgent pipeline instead of direct function calls",
     )
     return parser
 
@@ -84,8 +90,10 @@ def main() -> None:
 
     log.info("cli invoked", extra={"prompt": args.prompt})
 
+    manager = RelocationManager(use_agent=args.agent)
+
     try:
-        report = relocation_manager.run(args.prompt)
+        report = manager.run(args.prompt)
     except Exception:
         log.exception("relocation report failed")
         console.print("[red]Error:[/red] relocation report failed — check logs for details.")

@@ -1,28 +1,60 @@
-"""HuggingFace model factory — returns a ready-to-use InferenceClientModel."""
+"""Model factory — returns a ready-to-use smolagents Model.
+
+Supports two providers controlled by MODEL_PROVIDER env var:
+  - "huggingface" (default): HuggingFace Inference API
+  - "ollama": Local Ollama server
+
+All configuration lives in .env:
+  - MODEL_PROVIDER: "huggingface" or "ollama"
+  - MODEL_ID: model name (required)
+  - HUGGINGFACEHUB_API_TOKEN: required for huggingface provider
+  - OLLAMA_BASE_URL: optional, defaults to http://localhost:11434/v1
+"""
 
 from __future__ import annotations
 
 import os
 
 from dotenv import load_dotenv
-from smolagents import InferenceClientModel  # type: ignore[import-untyped]
+from smolagents import InferenceClientModel, OpenAIServerModel  # type: ignore[import-untyped]
+from smolagents.models import Model  # type: ignore[import-untyped]
 
 load_dotenv()
 
-_DEFAULT_MODEL_ID = "Qwen/Qwen2.5-Coder-32B-Instruct"
+_DEFAULT_OLLAMA_BASE_URL = "http://localhost:11434/v1"
 
 
-def get_model() -> InferenceClientModel:
-    """Return an InferenceClientModel loaded from environment variables.
+def get_model() -> Model:
+    """Return a Model instance based on MODEL_PROVIDER env var.
 
     Raises:
-        RuntimeError: If HUGGINGFACEHUB_API_TOKEN is not set.
+        RuntimeError: If required env vars are missing.
+        ValueError: If MODEL_PROVIDER is not recognized.
     """
-    token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
-    if not token:
+    provider = os.getenv("MODEL_PROVIDER", "huggingface").lower()
+    model_id = os.getenv("MODEL_ID")
+    if not model_id:
         raise RuntimeError(
-            "HUGGINGFACEHUB_API_TOKEN is not set. "
-            "Add it to your .env file and try again."
+            "MODEL_ID is not set. Add it to your .env file and try again."
         )
-    model_id = os.getenv("MODEL_ID", _DEFAULT_MODEL_ID)
-    return InferenceClientModel(model_id=model_id, token=token)
+
+    if provider == "ollama":
+        api_base = os.getenv("OLLAMA_BASE_URL", _DEFAULT_OLLAMA_BASE_URL)
+        return OpenAIServerModel(
+            model_id=model_id,
+            api_base=api_base,
+            api_key="ollama",
+        )
+
+    if provider == "huggingface":
+        token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+        if not token:
+            raise RuntimeError(
+                "HUGGINGFACEHUB_API_TOKEN is not set. "
+                "Add it to your .env file and try again."
+            )
+        return InferenceClientModel(model_id=model_id, token=token)
+
+    raise ValueError(
+        f"Unknown MODEL_PROVIDER '{provider}'. Use 'huggingface' or 'ollama'."
+    )
